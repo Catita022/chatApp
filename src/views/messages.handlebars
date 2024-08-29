@@ -1,15 +1,33 @@
 
 
 <div>
-    Envio de mensajes con Websockets!
+    <h1>Bienvenido a chatApp</h1>
+    <h2>Nombre: <span id="myName"> </span></h2>
+
+
     <div>
+        {{!-- input del msg --}}
         <p>
-            <input id="textoEntrada" type="text" alt="Introduce un mensaje">
+            <input id="chatBox" type="text" autofocus alt="Introduce un mensaje">
         </p>
-        <p id="log" />
+
+        {{!-- Btn para salir del chat --}}
+        <button id="closeChatBox"> Close Chat</button>
     </div>
+
+
+    {{!-- Renderizado de los Msg --}}
+    <div style=" width: 100%;
+            padding: 10px;
+            text-aling:center;
+            border: 2px solid #30a1be; /* Color del borde */
+            border-radius: 5px; /* Bordes redondeados */
+            font-size: 16px;">
+        <p id="messageLogs" style="color:blue; font-size:24px"></p>
+    </div>
+
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/messages.js"></script>

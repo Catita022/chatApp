@@ -6,7 +6,7 @@ import { Server } from 'socket.io';
 import viewRouter from './routes/views.router.js'
 
 const app = express();
-const PORT = 9090;
+const PORT = process.env.PORT || 9090;
 
 //Preparar la configuracion del servidor para recibir objetos JSON.
 app.use(express.json());
@@ -43,41 +43,28 @@ const socketServer = new Server(httpServer)
 
 
 
-const logs = [];
+const messages = [];
 socketServer.on('connection', socket => {
-    // TODO: Toda la logica referente sockets va aqui dentro
+    // Esto lo ve cualquier user que se conecte
+    socketServer.emit('messageLogs', messages)
 
-    console.log('Nuevo cliente conectado');
+    socket.on("message", data => {
+        messages.push(data)
+
+        socketServer.emit('messageLogs', messages)
+    });
 
 
-    socket.on('mensaje', data => {
+    // hacemos un broadcast del nuevo usuario que se conecta al chat
+    socket.on('userConnected', data => {
         console.log(data);
+        socket.broadcast.emit('userConnected', data.user)
     })
 
-    // Enviamos mensaje al cliente
-    socket.emit('msg_02', "Hola soy el server!!")
-
-
-    // Usando broadcast
-    socket.broadcast.emit("broadcast", "Este evento es para todos los sockets, menos el socket desde que se emitió el mensaje!");
-
-
-
-    socketServer.emit('msg_todos', "Todos ven este msg")
-
-
-    // socket.on('message1', data => {
-    //     console.log(data);
-    //     socketServer.emit('log', data)
-    // })
-
-
-    //Ejercicio 2
-
-    // Message2 se utiliza para la parte de almacenar y devolver los logs completos.
-    socket.on("message2", data => {
-        logs.push({ socketid: socket.id, message: data })
-        socketServer.emit('log', { logs });
-    });
+    socket.on('closeChat', data => {
+        if (data.close === "close") {
+            socket.disconnect()
+        }
+    })
 
 })
