@@ -57,7 +57,7 @@ socketServer.on('connection', socket => {
 
     // hacemos un broadcast del nuevo usuario que se conecta al chat
     socket.on('userConnected', data => {
-        console.log(data);
+        // console.log(data);
         socket.broadcast.emit('userConnected', data.user)
     })
 
